@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.DS_Store
+*.local
+
+# Telifli müzik — herkese açık repoya yüklenmez (yerelde çalışır).
+# Lisanslı/telifsiz bir parça kullanacaksan bu satırı kaldırabilirsin.
+public/runaway.mp3

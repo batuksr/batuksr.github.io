@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Batuhan | 3D Portfolyo — Uçarak Keşfet</title>
+  <meta name="description" content="Batuhan'ın interaktif 3D portfolyosu: low-poly bir ada dünyasında uçakla gezin, projeleri, özgeçmişi ve iletişim bilgilerini keşfedin." />
+  <meta name="author" content="Batuhan" />
+  <meta property="og:title" content="Batuhan | 3D Portfolyo" />
+  <meta property="og:description" content="Uçakla gezilebilir interaktif 3D portfolyo sitesi." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#bfe3f2" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" />
+</head>
+<body>
+  <!-- 3D sahne buraya monte edilir -->
+  <div id="app"></div>
+
+  <!-- Yükleme ekranı -->
+  <div id="loading-screen">
+    <div class="loading-inner">
+      <div class="loading-plane">✈️</div>
+      <div class="loading-title">Portfolyo Adaları</div>
+      <div class="loading-bar"><div class="loading-bar-fill" id="loading-fill"></div></div>
+      <div class="loading-tip">Motorlar ısınıyor…</div>
+    </div>
+  </div>
+
+  <!-- İlk ziyaret / kontroller kartı -->
+  <div id="hint-card" class="hidden">
+    <div class="hint-inner">
+      <h2>Hoş geldin, pilot! 🛩️</h2>
+      <p>Bu portfolyoyu uçarak keşfedeceksin. Parlayan işaretlere yaklaş ve panelleri aç.</p>
+      <div class="hint-controls">
+        <div><kbd>W</kbd>/<kbd>S</kbd> veya <kbd>↑</kbd>/<kbd>↓</kbd> — Burun yukarı / aşağı</div>
+        <div><kbd>A</kbd>/<kbd>D</kbd> veya <kbd>←</kbd>/<kbd>→</kbd> — Sola / sağa dönüş</div>
+        <div><kbd>Boşluk</kbd> — Gaz &nbsp;·&nbsp; <kbd>Shift</kbd> — Yavaşla</div>
+        <div><kbd>E</kbd> — Yaklaştığın noktayla etkileşim</div>
+        <div><kbd>C</kbd> — Kokpit / dış kamera</div>
+        <div>🛬 Yavaşla + alçal → adaya <strong>iniş</strong> yap; <kbd>Boşluk</kbd> ile kalk</div>
+      </div>
+      <p class="hint-mobile-note">Mobilde: sol joystick ile yön, sağdaki kol ile gaz.</p>
+      <button id="hint-start">Uçuşa Başla</button>
+    </div>
+  </div>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div id="hud-left">
+      <div class="hud-chip"><span class="hud-label">HIZ</span><span id="hud-speed">0</span><span class="hud-unit">km/s</span></div>
+      <div class="hud-chip"><span class="hud-label">İRTİFA</span><span id="hud-alt">0</span><span class="hud-unit">m</span></div>
+    </div>
+    <div id="hud-compass"><span id="hud-heading">K 0°</span></div>
+  </div>
+
+  <!-- Mini harita -->
+  <canvas id="minimap" width="150" height="150" class="hidden"></canvas>
+
+  <!-- Etkileşim ipucu -->
+  <div id="interact-prompt" class="hidden">
+    <kbd>E</kbd> <span id="interact-text">Paneli aç</span>
+  </div>
+
+  <!-- Sınır uyarısı -->
+  <div id="edge-warning" class="hidden">Haritanın sınırındasın — geri dönülüyor…</div>
+
+  <!-- İniş bildirimi -->
+  <div id="landed-toast" class="hidden">🛬 İniş başarılı! Kalkış için <kbd>Boşluk</kbd>'u basılı tut</div>
+
+  <!-- Hızlı erişim menüsü -->
+  <div id="menu">
+    <button id="menu-toggle" aria-label="Menü">☰</button>
+    <nav id="menu-list" class="hidden"></nav>
+  </div>
+  <button id="mute-btn" aria-label="Sesi aç/kapat" class="hidden">🔇</button>
+
+  <!-- İçerik paneli -->
+  <div id="panel-root" class="hidden">
+    <div id="panel-backdrop"></div>
+    <div id="panel-card">
+      <button id="panel-close" aria-label="Kapat">✕</button>
+      <div id="panel-content"></div>
+    </div>
+  </div>
+
+  <!-- Mobil kontroller -->
+  <div id="mobile-controls" class="hidden">
+    <div id="joystick-zone"><div id="joystick-base"><div id="joystick-knob"></div></div></div>
+    <div id="throttle-zone"><div id="throttle-track"><div id="throttle-knob"></div></div><span class="throttle-label">GAZ</span></div>
+    <button id="mobile-interact" class="hidden">E</button>
+    <button id="mobile-camera">📷</button>
+  </div>
+
+  <noscript>
+    <div style="padding:2rem;font-family:sans-serif;max-width:640px;margin:auto">
+      <h1>Batuhan — GIS &amp; Saha Teknolojileri Uzmanı</h1>
+      <p>Bu site interaktif bir 3D deneyimdir ve JavaScript gerektirir. İçerik: projeler, hakkımda/özgeçmiş, iletişim ve yetenekler bölümleri.</p>
+    </div>
+  </noscript>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
