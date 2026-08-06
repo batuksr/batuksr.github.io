@@ -6,9 +6,9 @@
 // ============================================================
 
 export const profile = {
-  name: 'Batuhan',
-  title: 'GIS & Saha Teknolojileri Uzmanı',
-  tagline: 'Harita, veri ve saha teknolojileriyle gerçek dünya problemlerine çözüm üretiyorum.',
+  name: 'Batuhan Keser',
+  title: 'Bilgisayar Mühendisliği Öğrencisi & Full Stack Developer Adayı',
+  tagline: 'ASP.NET Core ile backend mantığını, JavaScript ve Three.js ile frontend yaratıcılığını birleştiriyorum.',
   // CV dosyasını public/ klasörüne koy (örn. public/cv.pdf) ve yolu güncelle:
   cvUrl: '/cv.pdf',
 };
@@ -18,62 +18,62 @@ export const profile = {
 // image: public/ klasörüne koyduğun görselin yolu (opsiyonel, boş bırakılabilir)
 export const projects = [
   {
-    title: 'Örnek Proje 1 — Saha Veri Toplama Uygulaması',
+    title: 'Travyon — AI Destekli Seyahat Planlayıcı',
     description:
-      'Placeholder açıklama: Saha ekiplerinin çevrimdışı çalışabildiği, konum tabanlı veri toplama ve senkronizasyon uygulaması.',
-    tech: ['QGIS', 'PostGIS', 'JavaScript', 'Leaflet'],
+      'Kullanıcının tatil amacını, günlük temposunu ve tercihlerini öğrenip Haversine tabanlı rota optimizasyonuyla kişiselleştirilmiş günlük seyahat planları oluşturan yapay zeka destekli web uygulaması. Engineering Design dersi bitirme projesi.',
+    tech: ['React', 'TypeScript', 'Firebase', 'Google Gemini API', 'Three.js'],
     image: '',
-    links: { live: '', github: 'https://github.com/kullanici/proje1' },
+    links: { live: '', github: 'https://github.com/batuksr/Travyon' },
   },
   {
-    title: 'Örnek Proje 2 — Web Tabanlı Harita Panosu',
+    title: 'Lojman Çekiliş Sitesi',
     description:
-      'Placeholder açıklama: Gerçek zamanlı sensör verilerini harita üzerinde görselleştiren interaktif pano.',
-    tech: ['OpenLayers', 'Vue', 'GeoServer'],
+      'Kurumsal lojman başvurularını, puanlama hesaplamalarını, çekiliş süreçlerini ve yerleşim atamalarını uçtan uca yöneten ASP.NET Core MVC tabanlı web uygulaması.',
+    tech: ['ASP.NET Core MVC', '.NET 9', 'Entity Framework Core', 'SQL Server'],
     image: '',
-    links: { live: 'https://example.com', github: '' },
+    links: { live: '', github: 'https://github.com/batuksr/Housing-Lottery' },
   },
   {
-    title: 'Örnek Proje 3 — Drone Ortofoto İşleme Hattı',
+    title: 'Image Processing Studio',
     description:
-      'Placeholder açıklama: İHA görüntülerinden otomatik ortofoto ve sayısal yüzey modeli üreten işleme hattı.',
-    tech: ['Python', 'GDAL', 'OpenDroneMap'],
+      'Python/Flask ile geliştirilen, tarayıcı üzerinden görsel yükleyip çeşitli görüntü işleme operasyonlarını uygulamaya olanak tanıyan web uygulaması.',
+    tech: ['Python', 'Flask'],
     image: '',
-    links: { live: '', github: 'https://github.com/kullanici/proje3' },
+    links: { live: '', github: 'https://github.com/batuksr/image-processing-studio' },
   },
   {
-    title: 'Örnek Proje 4 — Bu 3D Portfolyo',
+    title: 'Bu 3D Portfolyo',
     description:
-      'Three.js ile geliştirilen, uçakla gezilebilir interaktif portfolyo deneyimi. Şu an içindesin! ✈️',
+      'Three.js ile geliştirilen, uçakla gezilebilir, tamamen prosedürel üretilmiş (harici model/texture dosyası yok) interaktif portfolyo deneyimi. Şu an içindesin! ✈️',
     tech: ['Three.js', 'Vite', 'JavaScript'],
     image: '',
-    links: { live: '', github: '' },
+    links: { live: 'https://batuksr.github.io', github: 'https://github.com/batuksr/batuksr.github.io' },
   },
 ];
 
 // --- HAKKIMDA ----------------------------------------------------
 export const about = {
-  bio: 'Placeholder biyografi: Coğrafi bilgi sistemleri ve saha teknolojileri alanında çalışıyorum. Harita üretiminden mobil veri toplamaya, mekânsal analizden web haritacılığına uzanan projelerde yer aldım.',
+  bio: 'Selçuk Üniversitesi\'nde 3. sınıf Bilgisayar Mühendisliği öğrencisiyim. Hackathon\'lar, sprint\'ler ve gerçek dünya projeleriyle müfredatın ötesine geçmeye çalışıyorum. ASP.NET Core ile backend mantığını, JavaScript ve Three.js ile frontend yaratıcılığını birleştiriyor; full-stack geliştirme alanında staj fırsatları arıyorum.',
   timeline: [
-    { year: '2024 — Bugün', title: 'GIS Uzmanı — Örnek Kurum', desc: 'Placeholder: Mekânsal veri altyapısı ve saha operasyonları.' },
-    { year: '2022 — 2024', title: 'Saha Teknolojileri Sorumlusu — Örnek Şirket', desc: 'Placeholder: Drone haritalama ve veri toplama süreçleri.' },
-    { year: '2018 — 2022', title: 'Lisans — Örnek Üniversite', desc: 'Placeholder: Harita / Geomatik Mühendisliği.' },
+    { year: 'Devam Ediyor', title: 'Bilgisayar Mühendisliği (3. Sınıf) — Selçuk Üniversitesi', desc: 'Müfredat dışı hackathon ve sprint\'lerle gerçek dünya projeleri geliştiriyorum.' },
+    { year: 'Proje', title: 'Travyon — Bitirme Projesi', desc: 'Engineering Design dersi kapsamında geliştirilen, yapay zeka destekli seyahat planlama uygulaması.' },
+    { year: 'Proje', title: 'Lojman Çekiliş Sitesi', desc: 'ASP.NET Core MVC ile geliştirilen kurumsal lojman başvuru ve çekiliş yönetim sistemi.' },
   ],
 };
 
 // --- YETENEKLER --------------------------------------------------
 export const skills = [
-  { group: 'GIS & Harita', items: ['QGIS', 'ArcGIS', 'PostGIS', 'GeoServer', 'GDAL'] },
-  { group: 'Web & Kod', items: ['JavaScript', 'Python', 'Leaflet', 'OpenLayers', 'Three.js'] },
-  { group: 'Saha', items: ['GNSS/RTK', 'Drone (İHA)', 'Mobil Veri Toplama', 'Fotogrametri'] },
+  { group: 'Backend & Veritabanı', items: ['C#', '.NET Core', 'ASP.NET Core MVC', 'Entity Framework Core', 'SQL Server'] },
+  { group: 'Frontend & Tasarım', items: ['JavaScript', 'TypeScript', 'React', 'Three.js', 'Tailwind CSS'] },
+  { group: 'Araçlar & Diğer', items: ['Git', 'GitHub', 'VS Code', 'Python', 'Flask'] },
 ];
 
 // --- İLETİŞİM ----------------------------------------------------
 export const contact = {
   email: 'batuksr75@gmail.com',
   links: [
-    { label: 'GitHub', url: 'https://github.com/kullanici', icon: '🐙' },
-    { label: 'LinkedIn', url: 'https://linkedin.com/in/kullanici', icon: '💼' },
+    { label: 'GitHub', url: 'https://github.com/batuksr', icon: '🐙' },
+    { label: 'LinkedIn', url: 'https://linkedin.com/in/batuhankeser', icon: '💼' },
     { label: 'E-posta', url: 'mailto:batuksr75@gmail.com', icon: '✉️' },
   ],
 };
