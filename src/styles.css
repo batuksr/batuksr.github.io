@@ -153,7 +153,7 @@ section { min-height: 100vh; padding: 120px var(--gutter); }
 .marquee {
   position: relative;
   overflow: hidden;
-  margin-top: -12vh; /* Hakkımda'nın alt boşluğuna biraz girsin */
+  top: -12vh; /* sadece şerit yukarı kayar; bölümler arası boşluk değişmez */
   /* Arkadan geçen kafayı örtsün */
   background: color-mix(in srgb, var(--backdrop-deep) 94%, transparent);
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
