@@ -14,31 +14,15 @@
   --gutter: clamp(16px, 5vw, 72px);
   color-scheme: dark;
 
-  /* Öne çıkan proje (Tripyon) renkleri: uygulamanın kendi paleti */
-  --f-bg: #f6f1e7;
-  --f-ink: #2e2119;
-  --f-soft: #6e5b4d;
-  --f-accent: #cd7137;
+  /* Öne çıkan proje (Tripyon) vitrini: sitenin koyu zemininde, vurgu rengi uygulamanın turuncusu */
+  --f-ink: var(--paper);
+  --f-soft: var(--muted);
+  --f-accent: #e0813f;
 
-  /* Tema ile değişen parçalar */
   --bar-bg: var(--backdrop-deep);
   --bar-fg: var(--paper);
   --bar-muted: var(--muted);
 }
-/* Vitrin bölümündeyken sayfa projenin renklerine bürünür (main.js sınıfı ekler) */
-html.theme-featured {
-  --bar-bg: var(--f-bg);
-  --bar-fg: var(--f-ink);
-  --bar-muted: var(--f-soft);
-}
-.tint {
-  position: fixed; inset: 0; z-index: 0;
-  background: var(--f-bg);
-  opacity: 0;
-  transition: opacity 0.7s ease;
-  pointer-events: none;
-}
-html.theme-featured .tint { opacity: 1; }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -255,13 +239,13 @@ section { min-height: 100vh; padding: 120px var(--gutter); }
   color: var(--f-soft);
   margin-bottom: clamp(18px, 3vh, 32px);
   padding-bottom: clamp(14px, 2vh, 22px);
-  border-bottom: 1px solid rgba(46, 33, 25, 0.16);
+  border-bottom: 1px solid rgba(237, 233, 226, 0.14);
 }
 .showcase-icon {
   display: block;
   width: clamp(56px, 10vh, 88px); height: clamp(56px, 10vh, 88px);
   border-radius: 22%;
-  box-shadow: 0 14px 30px -12px rgba(122, 58, 22, 0.55);
+  box-shadow: 0 14px 34px -12px rgba(224, 129, 63, 0.45);
   margin-bottom: clamp(12px, 2.4vh, 22px);
 }
 .showcase-name {
@@ -317,7 +301,7 @@ section { min-height: 100vh; padding: 120px var(--gutter); }
   border-radius: 26px;
   overflow: hidden;
   background: #e9dfcf;
-  box-shadow: 0 34px 60px -28px rgba(74, 55, 43, 0.55);
+  box-shadow: 0 34px 60px -28px rgba(0, 0, 0, 0.7);
   transform-origin: 50% 100%;
 }
 .showcase-card:nth-child(even) { margin-top: 7vh; }

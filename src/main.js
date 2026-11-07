@@ -186,7 +186,6 @@ let activeSection = null;
 function activate(id) {
   if (id === activeSection) return;
   activeSection = id;
-  document.documentElement.classList.toggle('theme-featured', id === 'projeler');
   setRim(rimColors[id]);
 }
 activate('top');
