@@ -38,6 +38,13 @@ const skillItems = skills.map((s) => `<li>${s}</li>`).join('');
 document.querySelectorAll('[data-skills]').forEach((ul) => {
   ul.innerHTML = skillItems + skillItems.replaceAll('<li>', '<li aria-hidden="true">');
 });
+// Bir kopyanın genişliği: kelimeler bu kadar kayınca başa döner.
+const marquee = $('.marquee');
+const measureMarquee = () =>
+  marquee.style.setProperty('--w', `${marquee.querySelector('.marquee-track').scrollWidth / 2}px`);
+measureMarquee();
+document.fonts.ready.then(measureMarquee);
+addEventListener('resize', measureMarquee);
 
 // Öne çıkan proje vitrini
 $('[data-f-icon]').src = featured.icon;

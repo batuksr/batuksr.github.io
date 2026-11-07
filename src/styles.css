@@ -178,9 +178,13 @@ section { min-height: 100vh; padding: 120px var(--gutter); }
   display: flex;
   width: max-content;
   padding: clamp(28px, 6vh, 64px) 0;
-  animation: marquee 60s linear infinite;
 }
+/* Her kelime ayrı ayrı ama aynı hızda kayar. Tüm şeridi tek parça kaydırmak
+   telefonda çok geniş bir katman oluşturuyor ve iPhone Safari onu hiç
+   çizmiyordu. --w (bir kopyanın genişliği) main.js'te ölçülür. */
 .marquee-track li {
+  animation: marquee var(--dur, 60s) linear infinite;
+  will-change: transform;
   display: flex; align-items: center;
   font-family: var(--font-display);
   font-weight: 800;
@@ -219,13 +223,14 @@ section { min-height: 100vh; padding: 120px var(--gutter); }
   pointer-events: none;
   transition: background 0.6s;
 }
-/* İki kopyanın ilki genişliğin yarısı: -50%'den 0'a kayınca dikişsiz döner */
+/* Liste iki kez yazılı; her kelime bir kopya genişliği kadar kayınca başa
+   döner, böylece döngü dikişsiz görünür. */
 @keyframes marquee {
-  from { transform: translate3d(-50%, 0, 0); }
+  from { transform: translate3d(calc(-1 * var(--w, 0px)), 0, 0); }
   to { transform: translate3d(0, 0, 0); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track { animation: none; }
+  .marquee-track li { animation: none; }
 }
 /* Telefonda hafif şerit: maske efektleri (her karede tüm şeridi yeniden
    çizdirir ve telefonda şeridin gelip gitmesine yol açar) ve spot ışığı
@@ -240,7 +245,8 @@ section { min-height: 100vh; padding: 120px var(--gutter); }
     z-index: 1;
   }
   .marquee-lit { display: none; }
-  .marquee-track { padding: 26px 0; animation-duration: 40s; will-change: transform; }
+  .marquee { --dur: 40s; }
+  .marquee-track { padding: 26px 0; }
   .marquee-track li { font-size: 2.5rem; color: #5b636e; }
 }
 
