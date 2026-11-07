@@ -20,8 +20,175 @@
     />
   </head>
   <body>
-    <!-- Kafa modeli inerken ekranın üstünde dolan ince çizgi -->
-    <div class="load-bar" aria-hidden="true"></div>
+    <!-- Yükleme ekranı: site kodunu beklemeden ilk anda görünsün diye stili ve
+         betiği burada. Ortadaki noktalı küre fareyle döndürülür, tıklanınca
+         dağılıp toplanır; noktalar yükleme ilerledikçe renklenir. İki yandaki
+         kelimeler de yükleme ilerledikçe ortaya yaklaşır. -->
+    <style>
+      .loader {
+        position: fixed; inset: 0; z-index: 100;
+        display: grid; place-items: center;
+        background: radial-gradient(ellipse 70% 60% at 50% 42%, #2a2e35 0%, #14161a 100%);
+        color: #ede9e2;
+        overflow: hidden;
+        touch-action: none;
+      }
+      .loader-word {
+        position: absolute; top: 50%;
+        font-family: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+        font-weight: 800;
+        font-size: clamp(1.1rem, 2.2vw, 1.6rem);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      /* --p: 0..1 yükleme. 0'da kelimeler ekran kenarında, 1'de karenin hemen yanında. */
+      .loader-word--l {
+        left: calc(3vw + (50vw - 76px - 3vw) * var(--p, 0));
+        transform: translate(calc(-100% * var(--p, 0)), -50%);
+      }
+      .loader-word--r {
+        right: calc(3vw + (50vw - 76px - 3vw) * var(--p, 0));
+        transform: translate(calc(100% * var(--p, 0)), -50%);
+      }
+      .loader-tile {
+        position: relative;
+        width: 120px; height: 120px;
+        border-radius: 14px;
+        background: #22252b;
+        box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(237, 233, 226, 0.06);
+        cursor: grab;
+      }
+      .loader-tile:active { cursor: grabbing; }
+      .loader-tile canvas { width: 100%; height: 100%; display: block; }
+      .loader-pct {
+        position: absolute; left: 50%; top: calc(50% + 84px);
+        transform: translateX(-50%);
+        font-family: 'Figtree', system-ui, sans-serif;
+        font-size: 0.875rem;
+        font-variant-numeric: tabular-nums;
+        color: #9a9ea6;
+      }
+      .loader.is-out { opacity: 0; visibility: hidden; transition: opacity 0.7s ease, visibility 0.7s; }
+      .loader.is-out .loader-tile { transform: scale(1.25); transition: transform 0.7s cubic-bezier(.2,.7,.2,1); }
+      /* Telefonda kelimeler karenin üstünde ve altında, kenardan ortaya kayar */
+      @media (max-width: 760px) {
+        .loader-word--l {
+          top: calc(50% - 104px);
+          left: calc(16px + (50vw - 16px) * var(--p, 0));
+          transform: translate(calc(-50% * var(--p, 0)), -50%);
+        }
+        .loader-word--r {
+          top: calc(50% + 124px);
+          right: calc(16px + (50vw - 16px) * var(--p, 0));
+          transform: translate(calc(50% * var(--p, 0)), -50%);
+        }
+      }
+    </style>
+    <div class="loader" aria-hidden="true">
+      <span class="loader-word loader-word--l">Full stack</span>
+      <div class="loader-tile"><canvas></canvas></div>
+      <span class="loader-word loader-word--r" data-loader-word>Geliştirici</span>
+      <span class="loader-pct">0</span>
+    </div>
+    <script>
+      (() => {
+        const L = document.querySelector('.loader');
+        const canvas = L.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+        const pctEl = L.querySelector('.loader-pct');
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Dil: site ile aynı kural (kayıtlı seçim, yoksa tarayıcı dili).
+        let lang = null;
+        try { lang = localStorage.getItem('lang'); } catch (e) {}
+        if (lang !== 'tr' && lang !== 'en') lang = (navigator.language || '').toLowerCase().startsWith('tr') ? 'tr' : 'en';
+        if (lang === 'en') L.querySelector('[data-loader-word]').textContent = 'Developer';
+
+        // Noktalı küre: Fibonacci dağılımıyla eşit aralıklı noktalar.
+        const N = 220, pts = [];
+        for (let i = 0; i < N; i++) {
+          const y = 1 - (i / (N - 1)) * 2, r = Math.sqrt(1 - y * y), a = i * 2.39996;
+          pts.push({ x: Math.cos(a) * r, y, z: Math.sin(a) * r, order: Math.random() });
+        }
+
+        // Yükleme: site kodu inerken %30'a kadar yavaşça yaklaşır; sonra
+        // gerçek model indirmesi kalanı doldurur (window.__loader.progress).
+        let target = 0, shown = 0, finished = false, closed = false;
+        const t0 = performance.now();
+
+        // Etkileşim: fare/parmak hareketi küreyi döndürür; tıklayınca dağılır.
+        let rotX = 0.4, rotY = 0, velX = 0, velY = 0.012, burst = 0;
+        let last = null;
+        L.addEventListener('pointermove', (e) => {
+          if (last) {
+            velY += (e.clientX - last.x) * 0.0006;
+            velX += (e.clientY - last.y) * 0.0006;
+          }
+          last = { x: e.clientX, y: e.clientY };
+        });
+        L.addEventListener('pointerleave', () => (last = null));
+        L.addEventListener('pointerdown', () => (burst = 1));
+
+        function resize() {
+          const d = Math.min(devicePixelRatio || 1, 2);
+          canvas.width = canvas.clientWidth * d;
+          canvas.height = canvas.clientHeight * d;
+        }
+        resize();
+        addEventListener('resize', resize);
+
+        function frame(now) {
+          if (closed) return;
+          const creep = 0.3 * (1 - Math.exp(-(now - t0) / 1800));
+          const goal = finished ? 1 : Math.max(target, creep);
+          shown += (goal - shown) * (reduce ? 1 : 0.06);
+          if (goal - shown < 0.002) shown = goal;
+          L.style.setProperty('--p', shown);
+          pctEl.textContent = Math.round(shown * 100);
+
+          // Dönüş: hıza sürtünme uygulanır ama hiç durmaz.
+          velY += (0.012 - velY) * 0.02;
+          velX += (0 - velX) * 0.05;
+          velY = Math.max(-0.25, Math.min(0.25, velY));
+          if (!reduce) { rotY += velY; rotX += velX; }
+          burst *= 0.92;
+
+          const w = canvas.width, h = canvas.height, R = w * 0.33 * (1 + burst * 0.45);
+          ctx.clearRect(0, 0, w, h);
+          const cy = Math.cos(rotY), sy = Math.sin(rotY), cx = Math.cos(rotX), sx = Math.sin(rotX);
+          for (const p of pts) {
+            const x1 = p.x * cy + p.z * sy, z1 = -p.x * sy + p.z * cy;
+            const y2 = p.y * cx - z1 * sx, z2 = p.y * sx + z1 * cx;
+            const depth = (z2 + 1) / 2; // 0 arka, 1 ön
+            const lit = p.order < shown;
+            ctx.globalAlpha = 0.25 + depth * 0.75;
+            ctx.fillStyle = lit ? '#86d6cb' : '#6b7079';
+            ctx.beginPath();
+            ctx.arc(w / 2 + x1 * R, h / 2 + y2 * R, (0.6 + depth * 1.4) * (w / 120), 0, 6.283);
+            ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+
+          if (finished && shown >= 1) {
+            closed = true;
+            setTimeout(() => {
+              L.classList.add('is-out');
+              dispatchEvent(new Event('loader:done'));
+              setTimeout(() => L.remove(), 800);
+            }, 250);
+            return;
+          }
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+
+        window.__loader = {
+          progress: (p) => (target = Math.max(target, 0.3 + 0.7 * p)),
+          finish: () => (finished = true),
+        };
+      })();
+    </script>
 
     <header class="topbar">
       <a class="topbar-name" href="#top" data-name></a>

@@ -181,10 +181,10 @@ if (!reduceMotion) {
 }
 
 // ---------- Kafa ----------
-// Sayfa modeli beklemez; model inerken üstte ince bir çizgi dolar.
-const loadBar = $('.load-bar');
+// Model indirmesi yükleme ekranındaki küreyi doldurur (index.html'deki betik).
+const loader = window.__loader || { progress() {}, finish() {} };
 const head = createHead($('.stage'), {
-  onProgress: (p) => loadBar.style.setProperty('--p', p),
+  onProgress: (p) => loader.progress(p),
 });
 const { pose } = head;
 
@@ -320,27 +320,23 @@ gsap.to('.hero-name', {
 });
 
 // ---------- Açılış ----------
-// 1) Yazılar hemen gelir (model beklenmez).
-// 2) Model inince stüdyo ışıkları yanar ve kafa kameraya döner.
+// Model inince yükleme ekranı %100'e tamamlanıp kapanır; ardından stüdyo
+// ışıkları yanar, kafa kameraya döner ve isim belirir.
 const d = reduceMotion ? 0 : 1;
 gsap.set('.hero-name span', { yPercent: 30, opacity: 0 });
 gsap.set('.hero-role, .hero-hint, .topbar', { opacity: 0 });
 pose.introRot = reduceMotion ? 0 : -1.1;
 
-document.fonts.ready.then(() => {
-  gsap.timeline({ delay: 0.15 * d })
-    .to('.hero-name span', { yPercent: 0, opacity: 1, duration: 1.4 * d, stagger: 0.12, ease: 'power3.out' }, 0)
-    .to('.hero-role, .hero-hint, .topbar', { opacity: 1, duration: 0.8 * d }, 0.8 * d);
-});
+function intro() {
+  gsap.timeline({ delay: 0.1 * d })
+    .to(pose, { light: 1, duration: 1.6 * d, ease: 'power2.inOut' }, 0)
+    .to(pose, { introRot: 0, duration: 2.2 * d, ease: 'power3.out' }, 0.2 * d)
+    .to('.hero-name span', { yPercent: 0, opacity: 1, duration: 1.4 * d, stagger: 0.12, ease: 'power3.out' }, 0.4 * d)
+    .to('.hero-role, .hero-hint, .topbar', { opacity: 1, duration: 0.8 * d }, 1.2 * d);
+}
+if (document.querySelector('.loader')) addEventListener('loader:done', intro, { once: true });
+else intro();
 
 head.ready
-  .then(() => {
-    loadBar.classList.add('is-done');
-    gsap.timeline()
-      .to(pose, { light: 1, duration: 1.6 * d, ease: 'power2.inOut' }, 0)
-      .to(pose, { introRot: 0, duration: 2.2 * d, ease: 'power3.out' }, 0.2 * d);
-  })
-  .catch((err) => {
-    console.error(err);
-    loadBar.classList.add('is-done'); // kafa olmadan da site kullanılabilir
-  });
+  .catch((err) => console.error(err)) // kafa olmadan da site kullanılabilir
+  .finally(() => loader.finish());
