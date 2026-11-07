@@ -221,11 +221,27 @@ section { min-height: 100vh; padding: 120px var(--gutter); }
 }
 /* İki kopyanın ilki genişliğin yarısı: -50%'den 0'a kayınca dikişsiz döner */
 @keyframes marquee {
-  from { transform: translateX(-50%); }
-  to { transform: translateX(0); }
+  from { transform: translate3d(-50%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
 }
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation: none; }
+}
+/* Telefonda hafif şerit: maske efektleri (her karede tüm şeridi yeniden
+   çizdirir ve telefonda şeridin gelip gitmesine yol açar) ve spot ışığı
+   katmanı kapalı; kenar kararması maske yerine üstteki bir gölgeyle yapılır. */
+@media (max-width: 760px) {
+  .marquee {
+    top: 0;
+    -webkit-mask-image: none; mask-image: none;
+  }
+  .marquee::before {
+    background: linear-gradient(90deg, var(--backdrop-deep), transparent 14%, transparent 86%, var(--backdrop-deep));
+    z-index: 1;
+  }
+  .marquee-lit { display: none; }
+  .marquee-track { padding: 26px 0; animation-duration: 40s; will-change: transform; }
+  .marquee-track li { font-size: 2.5rem; color: #5b636e; }
 }
 
 /* ---------- Öne çıkan proje vitrini ----------
