@@ -473,8 +473,9 @@ section { min-height: 100vh; padding: 120px var(--gutter); }
   .hero-name { font-size: 32vw; justify-content: flex-start; padding-top: 14vh; }
   .hero { flex-direction: column; justify-content: flex-end; align-items: flex-start; gap: 8px; }
   /* Telefonda kafa bu bölümlerde yok; kafa için bırakılan boşluk da yok */
-  .about, .projects { align-items: center; min-height: 100vh; }
-  .contact { justify-content: center; }
+  /* Telefonda bölümler içerikleri kadar yer kaplar; aralar daha sıkı */
+  .about, .projects { align-items: center; min-height: 0; padding-block: 72px; }
+  .contact { justify-content: center; min-height: 70vh; padding-block: 72px; }
   /* Proje kartları: yana kaydırmalı; yandaki kartın kenarı görünür */
   .projects-col { width: 100%; }
   .project-list {
@@ -528,6 +529,7 @@ section { min-height: 100vh; padding: 120px var(--gutter); }
    bilgi üstte, ekran görüntüleri parmakla kaydırılan bir şerit. */
 @media (max-width: 760px), (prefers-reduced-motion: reduce) {
   .showcase { display: block; height: auto; min-height: 100vh; padding: 110px 0 28vh; }
+  @media (max-width: 760px) { .showcase { min-height: 0; padding: 72px 0 8px; } }
   .showcase-info { padding: 0 var(--gutter) 28px; }
   .showcase-strip {
     height: auto;
