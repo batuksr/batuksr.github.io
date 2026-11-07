@@ -308,10 +308,12 @@ const poses = {
   },
   mobile: {
     top: { x: 0, y: -0.02, rotY: 0, scale: 0.62 },
-    hakkimda: { x: 0, y: 0.5, rotY: -0.35, scale: 0.34 },
-    projeler: { x: 0, y: -1.6, rotY: 0.35, scale: 0.4 }, // ekranın altında
-    diger: { x: 0, y: 0.6, rotY: 0.35, scale: 0.28 }, // başlığa binmesin
-    iletisim: { x: 0, y: 0.35, rotY: 0, scale: 0.4 },
+    // Telefonda kafa sadece girişte durur; aşağı kaydırınca sayfayla birlikte
+    // yukarı kayıp ekrandan çıkar ve bir daha görünmez.
+    hakkimda: { x: 0, y: 2, rotY: 0, scale: 0.62 },
+    projeler: { x: 0, y: 2, rotY: 0, scale: 0.62 },
+    diger: { x: 0, y: 2, rotY: 0, scale: 0.62 },
+    iletisim: { x: 0, y: 2, rotY: 0, scale: 0.62 },
   },
 };
 

@@ -450,8 +450,9 @@ section { min-height: 100vh; padding: 120px var(--gutter); }
   .topbar nav a:not(:last-child) { display: none; }
   .hero-name { font-size: 32vw; justify-content: flex-start; padding-top: 14vh; }
   .hero { flex-direction: column; justify-content: flex-end; align-items: flex-start; gap: 8px; }
-  .about, .projects { align-items: flex-end; min-height: 160vh; }
-  .about-col, .projects-col { padding-top: 45vh; }
+  /* Telefonda kafa bu bölümlerde yok; kafa için bırakılan boşluk da yok */
+  .about, .projects { align-items: center; min-height: 100vh; }
+  .contact { justify-content: center; }
   /* Proje kartları: yana kaydırmalı; yandaki kartın kenarı görünür */
   .projects-col { width: 100%; }
   .project-list {

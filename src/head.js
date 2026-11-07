@@ -151,6 +151,7 @@ export function createHead(canvas, { onProgress } = {}) {
 
   const clock = new THREE.Clock();
   const lookCurrent = { x: 0, y: 0 };
+  let wasOnScreen = true;
 
   renderer.setAnimationLoop(() => {
     const t = clock.getElapsedTime();
@@ -179,7 +180,11 @@ export function createHead(canvas, { onProgress } = {}) {
     eyeUniforms.uBlinkR.value = blink.r;
 
     for (const [light, base] of baseIntensity) light.intensity = base * pose.light;
-    renderer.render(scene, camera);
+    // Kafa ekran dışındayken çizim yapılmaz (pil ve işlemci tasarrufu); dışarı
+    // çıktığı karede bir kez daha çizilir ki ekranda yarım kafa kalmasın.
+    const onScreen = Math.abs(pose.y) < 1.7;
+    if (onScreen || wasOnScreen) renderer.render(scene, camera);
+    wasOnScreen = onScreen;
   });
 
   return {
