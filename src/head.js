@@ -83,12 +83,37 @@ export function createHead(canvas, { onProgress } = {}) {
       if (e.pointerType !== 'mouse') drag.active = false;
     });
   }
-  // Telefon eğimi
+  // Telefon eğimi: sağa yatırınca kafa sağa, sola yatırınca sola döner; öne-arkaya
+  // eğince yukarı-aşağı bakar. Açılar, telefonun tutulduğu duruşa göre ölçülür:
+  // ilk okuma "orta" kabul edilir ve orta nokta yavaşça yeni duruşa kayar, böylece
+  // telefon hafif eğik tutulsa da kafa bir süre sonra yine düz bakar.
+  const tilt = { x: 0, y: 0, base: null };
   window.addEventListener('deviceorientation', (e) => {
-    if (e.gamma == null || pointer.active) return;
-    pointer.x = THREE.MathUtils.clamp(e.gamma / 30, -1, 1);
-    pointer.y = THREE.MathUtils.clamp((45 - e.beta) / 30, -1, 1);
+    if (e.gamma == null || e.beta == null) return;
+    // Yatay tutulduğunda eksenler yer değiştirir.
+    const angle = screen.orientation?.angle ?? window.orientation ?? 0;
+    let lr = e.gamma, fb = e.beta;
+    if (angle === 90) [lr, fb] = [e.beta, -e.gamma];
+    else if (angle === -90 || angle === 270) [lr, fb] = [-e.beta, e.gamma];
+    if (!tilt.base) tilt.base = { lr, fb };
+    tilt.base.lr += (lr - tilt.base.lr) * 0.004;
+    tilt.base.fb += (fb - tilt.base.fb) * 0.004;
+    tilt.x = THREE.MathUtils.clamp((lr - tilt.base.lr) / 18, -1.6, 1.6);
+    tilt.y = THREE.MathUtils.clamp(-(fb - tilt.base.fb) / 22, -1.2, 1.2);
+    if (drag.onFirst && Math.abs(tilt.x) > 0.6) {
+      drag.onFirst(); // eğince de "eğ ya da sürükle" ipucu kaybolur
+      drag.onFirst = null;
+    }
   });
+  // iPhone hareket sensörü için izin ister; izin ancak bir dokunuşla istenebilir,
+  // bu yüzden sayfadaki ilk dokunuşta sorulur.
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    window.addEventListener(
+      'touchend',
+      () => DeviceOrientationEvent.requestPermission().catch(() => {}),
+      { once: true },
+    );
+  }
 
   const draco = new DRACOLoader().setDecoderPath('/draco/');
   const loader = new GLTFLoader().setDRACOLoader(draco);
@@ -140,8 +165,9 @@ export function createHead(canvas, { onProgress } = {}) {
     rig.scale.setScalar(viewSize * pose.scale);
 
     // Kafa, imlecin kendi konumuna göre nerede olduğuna bakar.
-    const dx = THREE.MathUtils.clamp(pointer.x - pose.x, -1.2, 1.2);
-    const dy = THREE.MathUtils.clamp(pointer.y - pose.y, -1, 1);
+    // Telefonda fare yoksa bakış yönünü telefonun eğimi belirler.
+    const dx = pointer.active ? THREE.MathUtils.clamp(pointer.x - pose.x, -1.2, 1.2) : tilt.x;
+    const dy = pointer.active ? THREE.MathUtils.clamp(pointer.y - pose.y, -1, 1) : tilt.y;
     const strength = reduceMotion ? 0.3 : 1;
     lookCurrent.x += (dx * 0.42 * strength - lookCurrent.x) * 0.06;
     lookCurrent.y += (-dy * 0.22 * strength - lookCurrent.y) * 0.06;
