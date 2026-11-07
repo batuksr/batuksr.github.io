@@ -115,7 +115,7 @@ export const skills = [
 ];
 
 export const contact = {
-  email: 'batuksr75@gmail.com',
+  email: 'iletisim@batukeser.com',
   links: [
     { label: 'GitHub', url: 'https://github.com/batuksr' },
     { label: 'LinkedIn', url: 'https://linkedin.com/in/batu-keser' },
