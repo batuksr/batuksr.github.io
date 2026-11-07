@@ -53,10 +53,36 @@ export function createHead(canvas, { onProgress } = {}) {
   const pointer = { x: 0, y: 0, active: false };
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   window.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return; // dokunmatik: aşağıdaki sürükleme
     pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
     pointer.y = -((e.clientY / window.innerHeight) * 2 - 1);
     pointer.active = true;
   });
+
+  // Dokunmatik: kafa parmakla yana sürüklenerek çevrilir, bırakınca yerine döner.
+  // Kaydırmalı alanlarda (kartlar, ekran görüntüleri) ve bağlantılarda başlayan
+  // dokunuşlar kafayı çevirmez.
+  const drag = { active: false, startX: 0, base: 0, yaw: 0, onFirst: null };
+  window.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse') return;
+    if (e.target.closest?.('.project-list, .showcase-strip, a, button')) return;
+    drag.active = true;
+    drag.startX = e.clientX;
+    drag.base = drag.yaw;
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!drag.active || e.pointerType === 'mouse') return;
+    drag.yaw = drag.base + ((e.clientX - drag.startX) / window.innerWidth) * Math.PI * 1.6;
+    if (drag.onFirst && Math.abs(e.clientX - drag.startX) > 12) {
+      drag.onFirst();
+      drag.onFirst = null;
+    }
+  });
+  for (const type of ['pointerup', 'pointercancel']) {
+    window.addEventListener(type, (e) => {
+      if (e.pointerType !== 'mouse') drag.active = false;
+    });
+  }
   // Telefon eğimi
   window.addEventListener('deviceorientation', (e) => {
     if (e.gamma == null || pointer.active) return;
@@ -119,7 +145,8 @@ export function createHead(canvas, { onProgress } = {}) {
     const strength = reduceMotion ? 0.3 : 1;
     lookCurrent.x += (dx * 0.42 * strength - lookCurrent.x) * 0.06;
     lookCurrent.y += (-dy * 0.22 * strength - lookCurrent.y) * 0.06;
-    look.rotation.set(lookCurrent.y, lookCurrent.x, 0);
+    if (!drag.active) drag.yaw *= 0.93; // bırakınca yumuşakça yerine döner
+    look.rotation.set(lookCurrent.y, lookCurrent.x + drag.yaw, 0);
 
     const blink = blinker.update(t);
     eyeUniforms.uBlinkL.value = blink.l;
@@ -129,7 +156,10 @@ export function createHead(canvas, { onProgress } = {}) {
     renderer.render(scene, camera);
   });
 
-  return { pose, rimColor: rim.color, ready, wink: blinker.wink };
+  return {
+    pose, rimColor: rim.color, ready, wink: blinker.wink,
+    onFirstDrag: (fn) => (drag.onFirst = fn), // ilk sürüklemede çağrılır (ipucunu gizlemek için)
+  };
 }
 
 // Modelin kendi koordinatlarında göz konumları (raycast ile ölçüldü).

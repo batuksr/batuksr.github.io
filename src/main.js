@@ -89,6 +89,30 @@ document.querySelectorAll('.pcard-body').forEach((card) =>
   }),
 );
 
+// Telefonda kart kaydırıcısının noktaları: dokununca o karta gider,
+// kaydırdıkça etkin nokta güncellenir.
+const projectList = $('[data-projects]');
+const dots = $('[data-pdots]');
+dots.innerHTML = projects.map((_, i) => `<button type="button" data-i="${i}"></button>`).join('');
+const dotButtons = [...dots.children];
+function syncDots() {
+  const cards = projectList.children;
+  const center = projectList.scrollLeft + projectList.clientWidth / 2;
+  let active = 0;
+  [...cards].forEach((c, i) => {
+    if (Math.abs(c.offsetLeft + c.offsetWidth / 2 - center) < Math.abs(cards[active].offsetLeft + cards[active].offsetWidth / 2 - center)) active = i;
+  });
+  dotButtons.forEach((b, i) => b.setAttribute('aria-current', String(i === active)));
+}
+projectList.addEventListener('scroll', syncDots, { passive: true });
+dots.addEventListener('click', (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  const card = projectList.children[+b.dataset.i];
+  projectList.scrollTo({ left: card.offsetLeft - (projectList.clientWidth - card.offsetWidth) / 2, behavior: 'smooth' });
+});
+syncDots();
+
 const mail = $('[data-mail]');
 mail.textContent = contact.email;
 mail.href = `mailto:${contact.email}`;
@@ -129,6 +153,7 @@ function applyLang() {
   document.querySelectorAll('[data-lang]').forEach((b) =>
     b.setAttribute('aria-pressed', String(b.dataset.lang === lang)),
   );
+  dotButtons.forEach((b, i) => b.setAttribute('aria-label', `${u.swipeLabel} ${i + 1}`));
 
   $('[data-role]').textContent = t(profile.role);
   $('[data-location]').textContent = t(profile.location);
@@ -186,6 +211,8 @@ const loader = window.__loader || { progress() {}, finish() {} };
 const head = createHead($('.stage'), {
   onProgress: (p) => loader.progress(p),
 });
+// Telefonda ilk sürüklemede "sürükle" ipucu kaybolur.
+head.onFirstDrag(() => $('.drag-hint')?.classList.add('is-hidden'));
 const { pose } = head;
 
 // ---------- Vitrin: sabitlenir, ekran görüntüleri yatay akar ----------
@@ -283,7 +310,7 @@ const poses = {
     top: { x: 0, y: -0.02, rotY: 0, scale: 0.62 },
     hakkimda: { x: 0, y: 0.5, rotY: -0.35, scale: 0.34 },
     projeler: { x: 0, y: -1.6, rotY: 0.35, scale: 0.4 }, // ekranın altında
-    diger: { x: 0, y: 0.5, rotY: 0.35, scale: 0.34 },
+    diger: { x: 0, y: 0.6, rotY: 0.35, scale: 0.28 }, // başlığa binmesin
     iletisim: { x: 0, y: 0.35, rotY: 0, scale: 0.4 },
   },
 };
