@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- BK: koyu zemin, dar-kalın harfler, altında sitenin turkuaz ışık çizgisi -->
+  <rect width="64" height="64" rx="14" fill="#14161a"/>
+  <g fill="#ede9e2">
+    <!-- B -->
+    <path d="M11 13h11.5c6 0 9.5 3 9.5 8 0 3-1.4 5-3.8 6 3 1 4.8 3.4 4.8 6.9 0 5.4-3.8 8.1-10 8.1H11V13zm7 11.6h3.4c2.2 0 3.4-1 3.4-2.9s-1.2-2.8-3.4-2.8H18v5.7zm0 11.5h4.1c2.4 0 3.7-1.1 3.7-3.1s-1.3-3.1-3.7-3.1H18v6.2z"/>
+    <!-- K -->
+    <path d="M36 13h7v11.4L50.4 13h7.9l-8.6 12.4L59 42h-8l-6.2-11.4-1.8 2.5V42h-7V13z"/>
+  </g>
+  <rect x="11" y="48" width="42" height="4" rx="2" fill="#86d6cb"/>
+</svg>

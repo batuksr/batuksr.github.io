@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Batuhan Keser</title>
-    <meta name="description" content="Batuhan Keser — kişisel portfolyo." />
+    <meta name="description" content="Batuhan Keser: full stack geliştirici, Selçuk Üniversitesi Bilgisayar Mühendisliği öğrencisi." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#14161a" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,11 +22,18 @@
 
     <header class="topbar">
       <a class="topbar-name" href="#top" data-name></a>
-      <nav aria-label="Bölümler">
-        <a href="#hakkimda">Hakkımda</a>
-        <a href="#projeler">Projeler</a>
-        <a href="#iletisim">İletişim</a>
-      </nav>
+      <div class="topbar-right">
+        <nav data-i18n-label="navLabel" aria-label="Bölümler">
+          <a href="#hakkimda" data-i18n="navAbout">Hakkımda</a>
+          <a href="#projeler" data-i18n="navProjects">Projeler</a>
+          <a href="#iletisim" data-i18n="navContact">İletişim</a>
+        </nav>
+        <!-- Dil düğmesi: seçim tarayıcıda hatırlanır -->
+        <div class="lang" role="group" data-i18n-label="langLabel" aria-label="Dil seçimi">
+          <button type="button" data-lang="tr" lang="tr">TR</button>
+          <button type="button" data-lang="en" lang="en">EN</button>
+        </div>
+      </div>
     </header>
 
     <!-- Arka plandaki dev isim: kafa bunun önünde durur. -->
@@ -38,12 +48,12 @@
       <section class="hero" id="top">
         <h1 class="visually-hidden" data-fullname></h1>
         <p class="hero-role"><span data-role></span><br /><span data-location></span></p>
-        <p class="hero-hint">Kaydırarak tanış</p>
+        <p class="hero-hint" data-i18n="heroHint">Kaydırarak tanış</p>
       </section>
 
       <section class="about" id="hakkimda" aria-labelledby="about-title">
         <div class="about-col">
-          <h2 id="about-title" class="section-title">Hakkımda</h2>
+          <h2 id="about-title" class="section-title" data-i18n="aboutTitle">Hakkımda</h2>
           <p class="about-lead" data-lead></p>
           <p class="about-body" data-body></p>
         </div>
@@ -53,7 +63,7 @@
            geçen kelime aydınlanır (üstteki ikinci katman, ortası açık bir maskeyle).
            lang="en": büyük harfe çevirirken "i" → "İ" olmasın. -->
       <div class="marquee" lang="en">
-        <h2 class="visually-hidden">Kullandığım teknolojiler</h2>
+        <h2 class="visually-hidden" data-i18n="skillsTitle">Kullandığım teknolojiler</h2>
         <ul class="marquee-track" data-skills></ul>
         <div class="marquee-lit" aria-hidden="true">
           <ul class="marquee-track" data-skills></ul>
@@ -63,14 +73,14 @@
       <!-- Öne çıkan proje vitrini: sayfa sabitlenir, ekran görüntüleri yatay akar. -->
       <section class="showcase" id="projeler" aria-labelledby="showcase-title">
         <div class="showcase-info">
-          <h2 id="showcase-title" class="showcase-title">Uygulamalarım</h2>
+          <h2 id="showcase-title" class="showcase-title" data-i18n="showcaseTitle">Uygulamalarım</h2>
           <img class="showcase-icon" data-f-icon alt="" width="88" height="88" />
           <!-- lang="en": büyük harfe çevirirken "i" Türkçe kuralla "İ" olmasın -->
           <h3 class="showcase-name" lang="en" data-f-name></h3>
           <p class="showcase-tagline" data-f-tagline></p>
           <p class="showcase-summary" data-f-summary></p>
           <div class="showcase-actions">
-            <a class="btn btn--primary" data-f-store target="_blank" rel="noopener">App Store'dan indir</a>
+            <a class="btn btn--primary" data-f-store target="_blank" rel="noopener" data-i18n="storeButton">App Store'dan indir</a>
             <a class="btn" data-f-web target="_blank" rel="noopener"></a>
           </div>
           <p class="showcase-meta" data-f-meta></p>
@@ -82,7 +92,7 @@
 
       <section class="projects" id="diger" aria-labelledby="projects-title">
         <div class="projects-col">
-          <h2 id="projects-title" class="section-title">Diğer projeler</h2>
+          <h2 id="projects-title" class="section-title" data-i18n="projectsTitle">Diğer projeler</h2>
           <ul class="project-list" data-projects></ul>
         </div>
       </section>
@@ -90,7 +100,7 @@
       <section class="contact" id="iletisim" aria-labelledby="contact-title">
         <!-- Fare üstüne gelince yazılar büyüteç lensiyle büyür (lens.js) -->
         <div class="contact-lens">
-          <h2 id="contact-title" class="section-title">Bir şey mi yapıyoruz?</h2>
+          <h2 id="contact-title" class="section-title" data-i18n="contactTitle">Bir şey mi yapıyoruz?</h2>
           <a class="contact-mail" data-mail></a>
         </div>
         <ul class="contact-links" data-links></ul>

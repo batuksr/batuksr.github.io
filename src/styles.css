@@ -80,6 +80,31 @@ a:focus-visible { outline: 2px solid var(--rim); outline-offset: 4px; border-rad
 .topbar nav { display: flex; gap: clamp(14px, 3vw, 32px); }
 .topbar nav a { text-decoration: none; color: var(--bar-muted); transition: color 0.2s; }
 .topbar nav a:hover { color: var(--bar-fg); }
+.topbar-right { display: flex; align-items: baseline; gap: clamp(18px, 3vw, 40px); }
+/* Dil düğmesi: seçili dil parlak, diğeri soluk */
+.lang { display: flex; gap: 2px; }
+.lang button {
+  padding: 2px 5px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--bar-muted);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.lang button:hover { color: var(--bar-fg); }
+.lang button[aria-pressed='true'] { color: var(--bar-fg); }
+.lang button + button::before {
+  content: '/';
+  margin-right: 7px;
+  color: var(--bar-muted);
+  font-weight: 400;
+}
+.lang button:focus-visible { outline: 2px solid var(--rim); outline-offset: 2px; }
 
 /* ---------- Katmanlar: isim < kafa < içerik ---------- */
 .hero-name {

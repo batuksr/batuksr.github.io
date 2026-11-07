@@ -6,27 +6,31 @@ import { Color } from 'three';
 import { createHead } from './head.js';
 import { createInkTrail } from './inkTrail.js';
 import { createLens } from './lens.js';
-import { profile, about, featured, projects, skills, contact } from './content.js';
+import { profile, about, featured, projects, skills, contact, ui } from './content.js';
 
 gsap.registerPlugin(ScrollTrigger);
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = (sel) => document.querySelector(sel);
 
-// ---------- İçeriği yerleştir ----------
+// ---------- Dil ----------
+// Seçim tarayıcıda hatırlanır; ilk ziyarette tarayıcı dili Türkçeyse TR, değilse EN.
+const LANGS = ['tr', 'en'];
+let lang = (() => {
+  try {
+    const saved = localStorage.getItem('lang');
+    if (LANGS.includes(saved)) return saved;
+  } catch {}
+  return (navigator.language || '').toLowerCase().startsWith('tr') ? 'tr' : 'en';
+})();
+// İki dilli alanlar { tr, en } nesnesidir; tek dilli alanlar düz metin.
+const t = (v) => (v && typeof v === 'object' ? v[lang] ?? v.tr : v);
+
+// ---------- Sayfa iskeleti (dilden bağımsız, bir kez kurulur) ----------
 const fullName = `${profile.firstName} ${profile.lastName}`;
 $('[data-name]').textContent = fullName;
 $('[data-fullname]').textContent = fullName;
 $('[data-first]').textContent = profile.firstName;
 $('[data-last]').textContent = profile.lastName;
-$('[data-role]').textContent = profile.role;
-$('[data-location]').textContent = profile.location;
-$('[data-body]').textContent = about.body;
-
-const lead = $('[data-lead]');
-lead.innerHTML = about.lead
-  .split(' ')
-  .map((w) => `<span class="word">${w}</span>`)
-  .join(' ');
 
 // Beceri şeridi: liste iki kez yazılır; şerit yarısı kadar kayınca başa döner,
 // böylece döngü dikişsiz görünür. İkinci kopya ekran okuyuculardan gizlenir.
@@ -38,39 +42,37 @@ document.querySelectorAll('[data-skills]').forEach((ul) => {
 // Öne çıkan proje vitrini
 $('[data-f-icon]').src = featured.icon;
 $('[data-f-name]').textContent = featured.name;
-$('[data-f-tagline]').textContent = featured.tagline;
-$('[data-f-summary]').textContent = featured.summary;
-$('[data-f-meta]').textContent = featured.meta;
 $('[data-f-store]').href = featured.links.appStore;
 const web = $('[data-f-web]');
 web.href = featured.links.web;
 web.textContent = new URL(featured.links.web).hostname;
 $('[data-f-screens]').innerHTML = featured.screens
-  .map((s) => `<li class="showcase-card"><img src="${s.src}" alt="${s.alt}" loading="lazy" width="600" height="1304" /></li>`)
+  .map((s) => `<li class="showcase-card"><img src="${s.src}" alt="" loading="lazy" width="600" height="1304" /></li>`)
   .join('');
 
 // Diğer projeler: her proje kendi renginde bir kart; kartlar scroll'da üst üste biner.
+// Yazılar boş bırakılır, applyLang() doldurur.
 $('[data-projects]').innerHTML = projects
   .map((p, i) => {
     const l = p.links || {};
     const links = [
-      l.live && `<a class="pcard-btn" href="${l.live}" target="_blank" rel="noopener">Siteyi aç</a>`,
-      l.appStore && `<a class="pcard-btn" href="${l.appStore}" target="_blank" rel="noopener">App Store'da gör</a>`,
-      l.code && `<a class="pcard-btn" href="${l.code}" target="_blank" rel="noopener">GitHub'da incele</a>`,
+      l.live && `<a class="pcard-btn" href="${l.live}" target="_blank" rel="noopener" data-i18n="linkLive"></a>`,
+      l.appStore && `<a class="pcard-btn" href="${l.appStore}" target="_blank" rel="noopener" data-i18n="linkAppStore"></a>`,
+      l.code && `<a class="pcard-btn" href="${l.code}" target="_blank" rel="noopener" data-i18n="linkCode"></a>`,
     ].filter(Boolean).join('');
     const when = p.status
-      ? `<span class="pcard-status">${p.status}</span>`
+      ? '<span class="pcard-status"></span>'
       : `<span class="pcard-year">${p.year}</span>`;
     return `<li class="pcard" style="--i:${i}; --c-bg:${p.color}; --c-accent:${p.accent}">
       <article class="pcard-body">
         <header class="pcard-top">
-          ${p.context ? `<span class="pcard-context">${p.context}</span>` : '<span></span>'}
+          <span class="pcard-context"></span>
           ${when}
         </header>
-        <h3 class="pcard-title">${p.title}</h3>
-        <p class="pcard-summary">${p.summary}</p>
+        <h3 class="pcard-title"></h3>
+        <p class="pcard-summary"></p>
         <footer class="pcard-foot">
-          <ul class="pcard-tech">${p.tech.map((t) => `<li>${t}</li>`).join('')}</ul>
+          <ul class="pcard-tech">${p.tech.map((x) => `<li>${x}</li>`).join('')}</ul>
           ${links}
         </footer>
       </article>
@@ -93,6 +95,73 @@ mail.href = `mailto:${contact.email}`;
 $('[data-links]').innerHTML = contact.links
   .map((l) => `<li><a href="${l.url}" target="_blank" rel="noopener">${l.label}</a></li>`)
   .join('');
+
+// ---------- Dile bağlı yazılar ----------
+// Hakkımda'daki büyük cümle scroll ile kelime kelime aydınlanır; dil değişince
+// kelimeler ve animasyonu yeniden kurulur.
+const lead = $('[data-lead]');
+let leadTween = null;
+function buildLead() {
+  leadTween?.scrollTrigger?.kill();
+  leadTween?.kill();
+  lead.innerHTML = t(about.lead)
+    .split(' ')
+    .map((w) => `<span class="word">${w}</span>`)
+    .join(' ');
+  if (reduceMotion) return;
+  leadTween = gsap.to(lead.querySelectorAll('.word'), {
+    opacity: 1,
+    stagger: 0.1,
+    ease: 'none',
+    scrollTrigger: { trigger: lead, start: 'top 80%', end: 'bottom 40%', scrub: true },
+  });
+}
+
+function applyLang() {
+  const u = ui[lang];
+  document.documentElement.lang = lang;
+  document.title = u.pageTitle;
+  document.querySelector('meta[name="description"]').content = u.pageDescription;
+  document.querySelectorAll('[data-i18n]').forEach((el) => (el.textContent = u[el.dataset.i18n]));
+  document.querySelectorAll('[data-i18n-label]').forEach((el) =>
+    el.setAttribute('aria-label', u[el.dataset.i18nLabel]),
+  );
+  document.querySelectorAll('[data-lang]').forEach((b) =>
+    b.setAttribute('aria-pressed', String(b.dataset.lang === lang)),
+  );
+
+  $('[data-role]').textContent = t(profile.role);
+  $('[data-location]').textContent = t(profile.location);
+  $('[data-body]').textContent = t(about.body);
+  buildLead();
+
+  $('[data-f-tagline]').textContent = t(featured.tagline);
+  $('[data-f-summary]').textContent = t(featured.summary);
+  $('[data-f-meta]').textContent = t(featured.meta);
+  document.querySelectorAll('.showcase-card img').forEach((img, i) => (img.alt = t(featured.screens[i].alt)));
+
+  document.querySelectorAll('.pcard').forEach((card, i) => {
+    const p = projects[i];
+    card.querySelector('.pcard-title').textContent = t(p.title);
+    card.querySelector('.pcard-context').textContent = t(p.context) || '';
+    card.querySelector('.pcard-summary').textContent = t(p.summary);
+    const status = card.querySelector('.pcard-status');
+    if (status) status.textContent = t(p.status);
+  });
+}
+applyLang();
+
+document.querySelectorAll('[data-lang]').forEach((b) =>
+  b.addEventListener('click', () => {
+    if (b.dataset.lang === lang) return;
+    lang = b.dataset.lang;
+    try {
+      localStorage.setItem('lang', lang);
+    } catch {}
+    applyLang();
+    ScrollTrigger.refresh(); // yazı uzunlukları değişti
+  }),
+);
 
 createInkTrail($('.hero-name'), { observe: $('#top') });
 createLens($('.contact-lens'));
@@ -249,16 +318,6 @@ gsap.to('.hero-name', {
   scrollTrigger: { trigger: '#hakkimda', start: 'top bottom', end: 'top 35%', scrub: true },
 });
 
-// Hakkımda paragrafı scroll ile kelime kelime aydınlanır.
-if (!reduceMotion) {
-  gsap.to('.about-lead .word', {
-    opacity: 1,
-    stagger: 0.1,
-    ease: 'none',
-    scrollTrigger: { trigger: '.about-lead', start: 'top 80%', end: 'bottom 40%', scrub: true },
-  });
-}
-
 // ---------- Açılış: stüdyo ışıkları yanar, kafa kameraya döner ----------
 gsap.set('.hero-name span', { yPercent: 30, opacity: 0 });
 gsap.set('.hero-role, .hero-hint, .topbar', { opacity: 0 });
@@ -277,5 +336,5 @@ head.ready
   })
   .catch((err) => {
     console.error(err);
-    counter.textContent = 'Model yüklenemedi';
+    counter.textContent = ui[lang].modelError;
   });
