@@ -181,9 +181,10 @@ if (!reduceMotion) {
 }
 
 // ---------- Kafa ----------
-const counter = $('.loader-count');
+// Sayfa modeli beklemez; model inerken üstte ince bir çizgi dolar.
+const loadBar = $('.load-bar');
 const head = createHead($('.stage'), {
-  onProgress: (p) => (counter.textContent = Math.round(p * 100)),
+  onProgress: (p) => loadBar.style.setProperty('--p', p),
 });
 const { pose } = head;
 
@@ -318,23 +319,28 @@ gsap.to('.hero-name', {
   scrollTrigger: { trigger: '#hakkimda', start: 'top bottom', end: 'top 35%', scrub: true },
 });
 
-// ---------- Açılış: stüdyo ışıkları yanar, kafa kameraya döner ----------
+// ---------- Açılış ----------
+// 1) Yazılar hemen gelir (model beklenmez).
+// 2) Model inince stüdyo ışıkları yanar ve kafa kameraya döner.
+const d = reduceMotion ? 0 : 1;
 gsap.set('.hero-name span', { yPercent: 30, opacity: 0 });
 gsap.set('.hero-role, .hero-hint, .topbar', { opacity: 0 });
 pose.introRot = reduceMotion ? 0 : -1.1;
 
+document.fonts.ready.then(() => {
+  gsap.timeline({ delay: 0.15 * d })
+    .to('.hero-name span', { yPercent: 0, opacity: 1, duration: 1.4 * d, stagger: 0.12, ease: 'power3.out' }, 0)
+    .to('.hero-role, .hero-hint, .topbar', { opacity: 1, duration: 0.8 * d }, 0.8 * d);
+});
+
 head.ready
   .then(() => {
-    counter.textContent = '100';
-    $('.loader').classList.add('is-done');
-    const d = reduceMotion ? 0 : 1;
-    gsap.timeline({ delay: 0.3 * d })
+    loadBar.classList.add('is-done');
+    gsap.timeline()
       .to(pose, { light: 1, duration: 1.6 * d, ease: 'power2.inOut' }, 0)
-      .to(pose, { introRot: 0, duration: 2.2 * d, ease: 'power3.out' }, 0.2 * d)
-      .to('.hero-name span', { yPercent: 0, opacity: 1, duration: 1.4 * d, stagger: 0.12, ease: 'power3.out' }, 0.4 * d)
-      .to('.hero-role, .hero-hint, .topbar', { opacity: 1, duration: 0.8 * d }, 1.4 * d);
+      .to(pose, { introRot: 0, duration: 2.2 * d, ease: 'power3.out' }, 0.2 * d);
   })
   .catch((err) => {
     console.error(err);
-    counter.textContent = ui[lang].modelError;
+    loadBar.classList.add('is-done'); // kafa olmadan da site kullanılabilir
   });

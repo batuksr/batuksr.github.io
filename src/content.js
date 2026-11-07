@@ -142,7 +142,6 @@ export const ui = {
     linkAppStore: "App Store'da gör",
     linkCode: "GitHub'da incele",
     contactTitle: 'Bir şey mi yapıyoruz?',
-    modelError: 'Model yüklenemedi',
   },
   en: {
     pageTitle: 'Batuhan Keser',
@@ -162,6 +161,5 @@ export const ui = {
     linkAppStore: 'View on the App Store',
     linkCode: 'View on GitHub',
     contactTitle: 'Shall we build something?',
-    modelError: "Couldn't load the model",
   },
 };
