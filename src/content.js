@@ -1,17 +1,16 @@
 // Sitedeki tüm yazılar buradan yönetilir.
-// [doldur] ile işaretli yerler geçici; CV'ndeki bilgilerle değiştir.
 
 export const profile = {
   firstName: 'Batuhan',
   lastName: 'Keser',
-  role: 'Yazılım geliştirici', // [doldur]
-  location: 'Konya, Türkiye', // [doldur]
+  role: 'Full stack geliştirici',
+  location: 'Konya, Türkiye',
 };
 
 export const about = {
   // Scroll ile kelime kelime aydınlanan ana paragraf.
   lead:
-    'Fikirleri çalışan ürünlere dönüştürüyorum. Arayüzün nasıl hissettirdiği de, arkasındaki sistemin nasıl çalıştığı da benim işim.', // [doldur]
+    'Fikirleri çalışan ürünlere dönüştürüyorum. Arayüzün nasıl hissettirdiği de, arkasındaki sistemin nasıl çalıştığı da benim işim.',
   body:
     "Selçuk Üniversitesi Bilgisayar Mühendisliği 4. sınıf öğrencisiyim. Web ve mobil uygulamalar geliştiriyorum; arayüzden sunucu tarafına kadar bir ürünün her katmanıyla uğraşmayı seviyorum. Boş zamanlarımda 3B web deneyimleri ve oyun geliştirme üzerine çalışıyorum. Şu an deneyimli bir ekiple gerçek projelerde yer alabileceğim, uzun dönem bir staj arıyorum.",
 };
