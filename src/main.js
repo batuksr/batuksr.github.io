@@ -306,12 +306,13 @@ sections.slice(1).forEach((id, i) => {
 // mobilde metnin üstünde kalır.
 const poses = {
   desktop: {
-    top: { x: 0, y: -0.4, rotY: 0, scale: 0.6 }, // aşağıda: çene alt kenara doğru kayar
-    hakkimda: { x: 0.48, y: 0, rotY: -0.55, scale: 0.55 },
+    // rotX: başın öne eğimi (aşağı bakış). Girişte hafif aşağı bakar.
+    top: { x: 0, y: -0.02, rotY: 0, rotX: 0.22, scale: 0.52 },
+    hakkimda: { x: 0.48, y: 0, rotY: -0.55, rotX: 0, scale: 0.55 },
     // Vitrinde kafa ekranın altına iner; sahne uygulamanın.
-    projeler: { x: -0.5, y: -1.6, rotY: 0.55, scale: 0.4 },
-    diger: { x: -0.5, y: 0, rotY: 0.6, scale: 0.5 },
-    iletisim: { x: 0, y: 0.42, rotY: 0, scale: 0.36 }, // başlığın üstünde, ona binmeden
+    projeler: { x: -0.5, y: -1.6, rotY: 0.55, rotX: 0, scale: 0.4 },
+    diger: { x: -0.5, y: 0, rotY: 0.6, rotX: 0, scale: 0.5 },
+    iletisim: { x: 0, y: 0.42, rotY: 0, rotX: 0, scale: 0.36 }, // başlığın üstünde, ona binmeden
   },
   mobile: {
     top: { x: 0, y: -0.02, rotY: 0, scale: 0.62 },
