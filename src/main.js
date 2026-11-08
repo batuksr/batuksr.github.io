@@ -306,7 +306,7 @@ sections.slice(1).forEach((id, i) => {
 // mobilde metnin üstünde kalır.
 const poses = {
   desktop: {
-    top: { x: 0, y: -0.02, rotY: 0, scale: 0.52 },
+    top: { x: 0, y: -0.4, rotY: 0, scale: 0.6 }, // aşağıda: çene alt kenara doğru kayar
     hakkimda: { x: 0.48, y: 0, rotY: -0.55, scale: 0.55 },
     // Vitrinde kafa ekranın altına iner; sahne uygulamanın.
     projeler: { x: -0.5, y: -1.6, rotY: 0.55, scale: 0.4 },
